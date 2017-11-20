@@ -24,6 +24,7 @@ namespace 微信数据入库
         {
             // 日志客户端
             AliLog.Logger log = new AliLog.Logger();
+            var noCno = 0;//没有卡号的卡
             try
             {
 
@@ -50,7 +51,7 @@ namespace 微信数据入库
                     userIds = connection.Query<User>("select t.Id from users t").ToList();
                 }
 
-                var noCno = 0;
+              
                 #region 测试使用
 
                 //userIds[0].Id = 1000000000020041;
@@ -62,8 +63,8 @@ namespace 微信数据入库
                 database = client.GetDatabase(dbName);
                 var cardCollection = database.GetCollection<Card>("tblCard");//表
                 List<WxInfo> wxInfoList = new List<WxInfo>();
-                ConcurrentDictionary<long, string> numbers = new ConcurrentDictionary<long, string>();
-                ConcurrentDictionary<long, Wechat> wxInfos = new ConcurrentDictionary<long, Wechat>();
+                ConcurrentDictionary<long, List<string>> numbers = new ConcurrentDictionary<long, List<string>>();
+                ConcurrentDictionary<long, List<WxItem>> wxInfos = new ConcurrentDictionary<long, List<WxItem>>();
 
                 using (IDbConnection connection = new MySqlConnection(conTerminal))
                 {
@@ -71,53 +72,59 @@ namespace 微信数据入库
                     //有的UserId没有Number
                     foreach (var numItem in number)
                     {
-                        numbers.TryAdd(numItem.UserId, numItem.Number);
+                       
+                        if (numbers.ContainsKey(numItem.UserId))
+                        {
+                            var existNums = numbers[numItem.UserId];
+                            existNums.Add(numItem.Number);
+                        }
+                        else
+                        {
+                            List<string> nums = new List<string>();
+                            nums.Add(numItem.Number);
+                            numbers.TryAdd(numItem.UserId, nums);
+
+                        }
                     }
                     var appId =
                         connection.Query<Wechat>("SELECT  t.OpenId,t.WxPublicNo,t.UserId FROM user_wechat t ")
                             .ToList();
                     foreach (var appItem in appId)
                     {
-                        wxInfos.TryAdd(appItem.UserId, appItem);
-                        
+                        if (wxInfos.ContainsKey(appItem.UserId))
+                        {
+                            var existWxInfos = wxInfos[appItem.UserId];
+                            foreach (var wxInfo in existWxInfos)
+                            {
+                                if (appItem.WxPublicNo == wxInfo.appId)//如果存在appId
+                                {
+                                    wxInfo.openId.Add(appItem.OpenId);
+                                }
+                                else
+                                {
+                                    WxItem wxItem = new WxItem();
+                                    wxItem.appId = appItem.WxPublicNo;
+                                    wxItem.openId = new List<string>();
+                                    wxItem.openId.Add(appItem.OpenId);
+                                    existWxInfos.Add(wxItem);
+                                    break;
+                                }
+                            }
+                           
+                        }
+                        else
+                        {
+                            var wxItems = new List<WxItem>();
+                            WxItem wxItem = new WxItem();
+                            wxItem.appId = appItem.WxPublicNo;
+                            wxItem.openId = new List<string>();
+                            wxItem.openId.Add(appItem.OpenId);
+                            wxItems.Add(wxItem);
+                            wxInfos.TryAdd(appItem.UserId, wxItems);
 
-                    }
-                }
+                        }
 
-                //BsonDocument query1 = new BsonDocument("$or", querys);
-                List<Card> cards = new List<Card>();
-                var mongoBegTime = DateTime.Now;
-                log.Debug($"mongo查询开始时间：{mongoBegTime}");
-                cardCollection.Find(new BsonDocument()).ForEachAsync((doc) =>
-                {
-                    cards.Add(doc);
-                }).Wait();
-                var mongoEndTime = DateTime.Now;
-                log.Debug($"mongo查询结束时间：{mongoEndTime}");
-                ConcurrentDictionary<string, Card> iccids = new ConcurrentDictionary<string, Card>();
-                ConcurrentDictionary<string, Card> imsis = new ConcurrentDictionary<string, Card>();
-                var noValues = 0;
-                foreach (var item in cards)
-                {
-                    if (item.iccid == null)
-                    {
 
-                        iccids.TryAdd("no" + noValues, item);
-                        noValues++;
-                    }
-                    else
-                    {
-                        iccids.TryAdd(item.iccid, item);
-
-                    }
-                    if (item.imsi == null)
-                    {
-                        imsis.TryAdd("no" + noValues, item);
-                        noValues++;
-                    }
-                    else
-                    {
-                        imsis.TryAdd(item.imsi, item);
 
                     }
                 }
@@ -129,41 +136,25 @@ namespace 微信数据入库
                     if (numbers.ContainsKey(user.Id) && wxInfos.ContainsKey(user.Id))
                     {
                         var number = numbers[user.Id];//从mong中找sim
-                        string card = null;
-                        if (iccids.ContainsKey(number))
+                        foreach (var numItem in number)
                         {
-                            card = iccids[number].cNo;
-                        }
-                        else if (imsis.ContainsKey(number))
-                        {
-                            card = imsis[number].cNo;
-                        }
-                        //BsonArray querys = new BsonArray();
-                        //querys.Add(new BsonDocument("iccid", number));
-                        //querys.Add(new BsonDocument("imsi", number));
-                        //BsonDocument query = new BsonDocument("$or", querys);
-                        //var card = cardCollection.Find(query).FirstOrDefault();
+                            BsonArray querys = new BsonArray();
+                            querys.Add(new BsonDocument("iccid", numItem));
+                            querys.Add(new BsonDocument("imsi", numItem));
+                            BsonDocument query = new BsonDocument("$or", querys);
+                            var card = cardCollection.Find(query).FirstOrDefault();
+                            if (card != null)
+                            {
+                                WxInfo wxInfo = new WxInfo();
+                                wxInfo.cNo = card.cNo;
+                                wxInfo.wxInfo = wxInfos[user.Id];
+                                wxInfoList.Add(wxInfo);
+                            }
+                            else
+                            {
+                                log.Debug($"{number}在库里没有对应的卡号,目前没有卡号的共{++noCno}个");
+                            }
 
-                        if (card != null)
-                        {
-                            WxInfo wxInfo = new WxInfo();
-                            wxInfo.cNo = card;
-
-                            wxInfo.wxInfo = new List<WxItem>();
-                            WxItem wxItem = new WxItem();
-                            wxItem.appId = wxInfos[user.Id].WxPublicNo;
-
-                            wxItem.openId = new List<string>();
-                            var openId = wxInfos[user.Id].OpenId;
-                            wxItem.openId.Add(openId);
-
-                            wxInfo.wxInfo.Add(wxItem);
-
-                            wxInfoList.Add(wxInfo);
-                        }
-                        else
-                        {
-                            log.Debug($"{number}在库里没有对应的卡号,目前没有卡号的共{++noCno}个");
                         }
                     }
                 }
