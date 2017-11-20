@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "微信数据入库", "微信数据入库\微信数据入库.csproj", "{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowDataModel", "E:\SourceCode\车控宝服务平台\卡多多\新卡多多\公共组件\FlowDataModel\FlowDataModel.csproj", "{D0692A41-6732-416C-8C8D-A6B6046F2BD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AliLog", "E:\SourceCode\车控宝服务平台\公共组件\AliLog\AliLog\AliLog.csproj", "{B52F5B39-CBCE-464E-B953-5DD1C0377343}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Debug|x64.Build.0 = Debug|Any CPU
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Debug|x86.Build.0 = Debug|Any CPU
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Release|x64.ActiveCfg = Release|Any CPU
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Release|x64.Build.0 = Release|Any CPU
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Release|x86.ActiveCfg = Release|Any CPU
+		{4BA44595-D0BB-4E6F-AAB7-E9C1557D9F2A}.Release|x86.Build.0 = Release|Any CPU
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Debug|x64.ActiveCfg = Debug|x64
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Debug|x64.Build.0 = Debug|x64
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Debug|x86.ActiveCfg = Debug|x86
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Debug|x86.Build.0 = Debug|x86
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Release|x64.ActiveCfg = Release|x64
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Release|x64.Build.0 = Release|x64
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Release|x86.ActiveCfg = Release|x86
+		{D0692A41-6732-416C-8C8D-A6B6046F2BD1}.Release|x86.Build.0 = Release|x86
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Debug|x64.Build.0 = Debug|Any CPU
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Debug|x86.ActiveCfg = Debug|x86
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Debug|x86.Build.0 = Debug|x86
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Release|x64.ActiveCfg = Release|Any CPU
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Release|x64.Build.0 = Release|Any CPU
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Release|x86.ActiveCfg = Release|x86
+		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
