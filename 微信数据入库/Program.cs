@@ -139,7 +139,7 @@ namespace 微信数据入库
                
                 //每次10000
                 long suctotalData = 0;
-                //long totalData1 = 0;
+                long realtotalData = 0;
                 //long testCount = 0;
                 long failCount = 0;
                 var pageSize = 10000;
@@ -160,9 +160,10 @@ namespace 微信数据入库
                         if (numbers.ContainsKey(user.Id) && wxInfos.ContainsKey(user.Id))
                         {
                             var number = numbers[user.Id];//从mong中找sim
-                            //totalData1++;
+                          
                             foreach (var numItem in number)
                             {
+                                realtotalData++;
                                 BsonArray querys = new BsonArray();
                                 querys.Add(new BsonDocument("iccid", numItem));
                                 querys.Add(new BsonDocument("imsi", numItem));
@@ -177,7 +178,7 @@ namespace 微信数据入库
                                 }
                                 else
                                 {
-                                    log.Debug($"{number}在库里没有对应的卡号,目前没有卡号的共{++noCno}个");
+                                    log.Debug($"{numItem}在库里没有对应的卡号,目前没有卡号的共{++noCno}个");
                                 }
 
                             }
@@ -200,7 +201,7 @@ namespace 微信数据入库
                 var endTime = DateTime.Now;
                 log.Debug($"微信数据入库结束时间：{endTime}");
                
-                    log.Debug($"微信数据入库：总数据量:{totalData}，总成功数：{suctotalData}，总失败数：{totalData- suctotalData}");
+                    log.Debug($"微信数据入库：总数据量:{realtotalData}，总成功数：{suctotalData}，由于mongo数据库卡号不存在失败的卡：{noCno}");
             }
             catch (Exception ex)
             {
