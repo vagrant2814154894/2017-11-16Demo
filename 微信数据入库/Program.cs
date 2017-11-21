@@ -24,28 +24,23 @@ namespace 微信数据入库
         {
             // 日志客户端
             AliLog.Logger log = new AliLog.Logger();
-            var noCno = 0;//没有卡号的卡
-            long totalData = 0;//总数据量
+            //链接字符串
+            string conn = "mongodb://127.0.0.1:27017";
+            //string conn = "mongodb://root:Fxft2017@dds-bp104401edaca7e41.mongodb.rds.aliyuncs.com:3717,dds-bp104401edaca7e42.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-3015103";
+            //指定的数据库
+            //string dbName = "CardInfo";
+            string dbName = "Test";
+            // Mongo客户端
+            MongoClient client;
+            //当前操作数据库
+            IMongoDatabase database;
+
+            //string conTerminal = "Server=fxftdatabase.mysql.rds.aliyuncs.com;Port=3306;initial catalog=base_app;uid=ckb_admin; pwd =ckbadmin;Allow User Variables=True;Convert Zero Datetime=True";
+
+            string conTerminal = "Server=localhost;Port=3306;initial catalog=base_app;uid=sa; pwd =123456;Allow User Variables=True;Convert Zero Datetime=True";
+
             try
             {
-
-                //链接字符串
-                //string conn = "mongodb://127.0.0.1:27017";
-                string conn = "mongodb://root:Fxft2017@dds-bp104401edaca7e41.mongodb.rds.aliyuncs.com:3717,dds-bp104401edaca7e42.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-3015103";
-                //指定的数据库
-                string dbName = "CardInfo";
-                //string dbName = "Test";
-                // Mongo客户端
-                MongoClient client;
-                //当前操作数据库
-                IMongoDatabase database;
-
-                string conUser = "Server=fxftdatabase.mysql.rds.aliyuncs.com;Port=3306;initial catalog=base_user;uid=ckb_admin; pwd =ckbadmin;Allow User Variables=True;Convert Zero Datetime=True";
-                string conTerminal = "Server=fxftdatabase.mysql.rds.aliyuncs.com;Port=3306;initial catalog=base_app;uid=ckb_admin; pwd =ckbadmin;Allow User Variables=True;Convert Zero Datetime=True";
-
-                //string conUser = "Server=localhost;Port=3306;initial catalog=base_user;uid=sa; pwd =123456;Allow User Variables=True;Convert Zero Datetime=True";
-                //string conTerminal = "Server=localhost;Port=3306;initial catalog=base_app;uid=sa; pwd =123456;Allow User Variables=True;Convert Zero Datetime=True";
-
                 #region 测试使用
                 //userIds[0].Id = 1000000000020041;
                 #endregion
@@ -57,11 +52,11 @@ namespace 微信数据入库
                 var cardCollection = database.GetCollection<Card>("tblCard");//表
                 var wechatCollection = database.GetCollection<WxInfo>("tblWX");//表
 
+                #region 将user_terminal表和user_wechat表的数据缓存到本地
 
                 ConcurrentDictionary<long, List<string>> numbers = new ConcurrentDictionary<long, List<string>>();
                 ConcurrentDictionary<long, List<WxItem>> wxInfos = new ConcurrentDictionary<long, List<WxItem>>();
                 List<Cno> cNo = null;
-
                 using (IDbConnection connection = new MySqlConnection(conTerminal))
                 {
                     cNo = connection.Query<Cno>("SELECT t.Number,t.UserId FROM user_terminal t ").ToList();
@@ -127,12 +122,15 @@ namespace 微信数据入库
                     }
                 }
 
+                #endregion
+
+                #region mongo 微信表 数据新增
                 long suctotalData = 0;
                 long noData = 0;//在user_wechat表里无数据
+                var noCno = 0;//在mongo tbCard表里没有卡号的卡
                 var pageSize = 10000;
                 var total = cNo.Count;
                 var pages = total / pageSize + (total % pageSize > 0 ? 1 : 0);
-
                 for (int i = 0; i < pages; i++)
                 {
                     var subDatas = cNo.Skip(i * pageSize).Take(pageSize);
@@ -143,7 +141,7 @@ namespace 微信数据入库
 
                         if (wxInfos.ContainsKey(user.UserId))
                         {
-                            //从mong中找sim
+                            //从mongo中找sim
                             BsonArray querys = new BsonArray();
                             querys.Add(new BsonDocument("cNo", user.Number));
                             querys.Add(new BsonDocument("iccid", user.Number));
@@ -178,10 +176,11 @@ namespace 微信数据入库
                     //failCount += subDatas.ToList().Count - bulkResult.InsertedCount;
                 }
 
-
                 var endTime = DateTime.Now;
                 log.Debug($"微信数据入库结束时间：{endTime}");
                 log.Debug($"微信数据入库：总数据量:{cNo.Count}张，总成功数：{suctotalData}，由于mongo数据库卡号不存在失败的卡：{noCno},在user_wechat表里无数据的卡共：{noData}张");
+                #endregion
+
             }
             catch (Exception ex)
             {
