@@ -19,26 +19,82 @@ namespace 微信数据入库
 {
     class Program
     {
+        // 日志客户端
+        static AliLog.Logger log = new AliLog.Logger();
+        //链接字符串
+        static string conn = "mongodb://127.0.0.1:27017";
+        //string conn = "mongodb://root:Fxft2017@dds-bp104401edaca7e41.mongodb.rds.aliyuncs.com:3717,dds-bp104401edaca7e42.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-3015103";
+        //指定的数据库
+        //string dbName = "CardInfo";
+        static string dbName = "Test";
+        // Mongo客户端
+        static MongoClient client;
+        //当前操作数据库
+        static IMongoDatabase database;
+
+        //string conTerminal = "Server=fxftdatabase.mysql.rds.aliyuncs.com;Port=3306;initial catalog=base_app;uid=ckb_admin; pwd =ckbadmin;Allow User Variables=True;Convert Zero Datetime=True";
+
+        static string conTerminal = "Server=localhost;Port=3306;initial catalog=base_app;uid=sa; pwd =123456;Allow User Variables=True;Convert Zero Datetime=True";
 
         static void Main(string[] args)
         {
-            // 日志客户端
-            AliLog.Logger log = new AliLog.Logger();
-            //链接字符串
-            string conn = "mongodb://127.0.0.1:27017";
-            //string conn = "mongodb://root:Fxft2017@dds-bp104401edaca7e41.mongodb.rds.aliyuncs.com:3717,dds-bp104401edaca7e42.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-3015103";
-            //指定的数据库
-            //string dbName = "CardInfo";
-            string dbName = "Test";
-            // Mongo客户端
-            MongoClient client;
-            //当前操作数据库
-            IMongoDatabase database;
+            FirstAddToWheactTable();
+           var terminalIds =  MemCachedManager.cache.Get("terminalIds") as List<long>;//number也要缓存
+            
+            List<Cno> card = null;
+            using (IDbConnection connection = new MySqlConnection(conTerminal))
+            {
 
-            //string conTerminal = "Server=fxftdatabase.mysql.rds.aliyuncs.com;Port=3306;initial catalog=base_app;uid=ckb_admin; pwd =ckbadmin;Allow User Variables=True;Convert Zero Datetime=True";
+                card = connection.Query<Cno>("SELECT t.Id,t.Number,t.UserId FROM user_terminal t").ToList();
+                SortedDictionary<long, Cno> ids = new SortedDictionary<long, Cno>();
 
-            string conTerminal = "Server=localhost;Port=3306;initial catalog=base_app;uid=sa; pwd =123456;Allow User Variables=True;Convert Zero Datetime=True";
+                foreach (var cardItem in card)
+                {
+                    ids.Add(cardItem.Id, cardItem);
+                }
+                if (terminalIds != null)
+                {
+                    //mongo同步已删除数据
+                    foreach (var id in terminalIds)
+                    {
+                        if (!ids.ContainsKey(id))
+                        {
+                            //拿到number号去mongo里面查卡号，
+                            //根据卡号删除数据
+                        }
+                    }
 
+                    //mongo同步新增数据
+                    terminalIds.Sort();
+                    var maxId = terminalIds[0];
+                   
+                    if (ids[0].Id > maxId)
+                    {
+              var  newCard = connection.Query<Cno>("SELECT t.Id,t.Number,t.UserId FROM user_terminal t where t.Id>@maxId",).ToList();
+
+                    }
+
+
+
+
+                }
+               
+
+
+                //mongo同步修改的数据
+
+
+            }
+
+            
+
+
+
+
+        }
+
+        static void FirstAddToWheactTable()
+        {
             try
             {
                 #region 测试使用
@@ -52,18 +108,22 @@ namespace 微信数据入库
                 var cardCollection = database.GetCollection<Card>("tblCard");//表
                 var wechatCollection = database.GetCollection<WxInfo>("tblWX");//表
 
+
                 #region 将user_terminal表和user_wechat表的数据缓存到本地
 
                 ConcurrentDictionary<long, List<string>> numbers = new ConcurrentDictionary<long, List<string>>();
                 ConcurrentDictionary<long, List<WxItem>> wxInfos = new ConcurrentDictionary<long, List<WxItem>>();
+                List<long> terminalIds = new List<long>();
                 List<Cno> cNo = null;
                 using (IDbConnection connection = new MySqlConnection(conTerminal))
                 {
-                    cNo = connection.Query<Cno>("SELECT t.Number,t.UserId FROM user_terminal t ").ToList();
+
+                    cNo = connection.Query<Cno>("SELECT t.Id,t.Number,t.UserId FROM user_terminal t ").ToList();
+                  var  maxId= connection.Query<Cno>("SELECT t.Id,t.Number,t.UserId FROM user_terminal t ").ToList();
                     log.Debug($"从user_terminal表获取到的需要入库的卡共：{cNo.Count}张");
                     foreach (var numItem in cNo)
                     {
-
+                        terminalIds.Add(numItem.Id);
                         if (numbers.ContainsKey(numItem.UserId))
                         {
                             var existNums = numbers[numItem.UserId];
@@ -77,10 +137,10 @@ namespace 微信数据入库
 
                         }
                     }
-
+                    MemCachedManager.cache.Set("terminalIds", terminalIds, DateTime.Now.AddDays(3));
                     var appId =
-                        connection.Query<Wechat>("SELECT  t.OpenId,t.WxPublicNo,t.UserId FROM user_wechat t ")
-                            .ToList();
+                         connection.Query<Wechat>("SELECT  t.OpenId,t.WxPublicNo,t.UserId FROM user_wechat t ")
+                             .ToList();
 
                     foreach (var appItem in appId)
                     {
@@ -187,10 +247,6 @@ namespace 微信数据入库
 
                 log.Error($"微信数据入库异常信息：{ex.Message}");
             }
-
-
         }
-
-
     }
 }
