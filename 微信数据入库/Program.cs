@@ -30,21 +30,21 @@ namespace 微信数据入库
             {
 
                 //链接字符串
-                string conn = "mongodb://127.0.0.1:27017";
-                //string conn = "mongodb://root:Fxft2017@dds-bp104401edaca7e41.mongodb.rds.aliyuncs.com:3717,dds-bp104401edaca7e42.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-3015103";
+                //string conn = "mongodb://127.0.0.1:27017";
+                string conn = "mongodb://root:Fxft2017@dds-bp104401edaca7e41.mongodb.rds.aliyuncs.com:3717,dds-bp104401edaca7e42.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-3015103";
                 //指定的数据库
-                //string dbName = "CardInfo";
-                string dbName = "Test";
+                string dbName = "CardInfo";
+                //string dbName = "Test";
                 // Mongo客户端
                 MongoClient client;
                 //当前操作数据库
                 IMongoDatabase database;
 
-                //string conUser = "Server=fxftdatabase.mysql.rds.aliyuncs.com;Port=3306;initial catalog=base_user;uid=ckb_admin; pwd =ckbadmin;Allow User Variables=True;Convert Zero Datetime=True";
-                //string conTerminal = "Server=fxftdatabase.mysql.rds.aliyuncs.com;Port=3306;initial catalog=base_app;uid=ckb_admin; pwd =ckbadmin;Allow User Variables=True;Convert Zero Datetime=True";
+                string conUser = "Server=fxftdatabase.mysql.rds.aliyuncs.com;Port=3306;initial catalog=base_user;uid=ckb_admin; pwd =ckbadmin;Allow User Variables=True;Convert Zero Datetime=True";
+                string conTerminal = "Server=fxftdatabase.mysql.rds.aliyuncs.com;Port=3306;initial catalog=base_app;uid=ckb_admin; pwd =ckbadmin;Allow User Variables=True;Convert Zero Datetime=True";
 
-                string conUser = "Server=localhost;Port=3306;initial catalog=base_user;uid=sa; pwd =123456;Allow User Variables=True;Convert Zero Datetime=True";
-                string conTerminal = "Server=localhost;Port=3306;initial catalog=base_app;uid=sa; pwd =123456;Allow User Variables=True;Convert Zero Datetime=True";
+                //string conUser = "Server=localhost;Port=3306;initial catalog=base_user;uid=sa; pwd =123456;Allow User Variables=True;Convert Zero Datetime=True";
+                //string conTerminal = "Server=localhost;Port=3306;initial catalog=base_app;uid=sa; pwd =123456;Allow User Variables=True;Convert Zero Datetime=True";
 
                 #region 测试使用
                 //userIds[0].Id = 1000000000020041;
@@ -82,7 +82,7 @@ namespace 微信数据入库
 
                         }
                     }
-                 
+
                     var appId =
                         connection.Query<Wechat>("SELECT  t.OpenId,t.WxPublicNo,t.UserId FROM user_wechat t ")
                             .ToList();
@@ -145,6 +145,7 @@ namespace 微信数据入库
                         {
                             //从mong中找sim
                             BsonArray querys = new BsonArray();
+                            querys.Add(new BsonDocument("cNo", user.Number));
                             querys.Add(new BsonDocument("iccid", user.Number));
                             querys.Add(new BsonDocument("imsi", user.Number));
                             BsonDocument query = new BsonDocument("$or", querys);
