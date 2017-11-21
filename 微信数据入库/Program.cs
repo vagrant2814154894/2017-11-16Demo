@@ -46,15 +46,7 @@ namespace 微信数据入库
                 string conUser = "Server=localhost;Port=3306;initial catalog=base_user;uid=sa; pwd =123456;Allow User Variables=True;Convert Zero Datetime=True";
                 string conTerminal = "Server=localhost;Port=3306;initial catalog=base_app;uid=sa; pwd =123456;Allow User Variables=True;Convert Zero Datetime=True";
 
-                List<User> userIds;
-                using (IDbConnection connection = new MySqlConnection(conUser))
-                {
-                    userIds = connection.Query<User>("select t.Id from users t").ToList();
-                }
-
-
                 #region 测试使用
-
                 //userIds[0].Id = 1000000000020041;
                 #endregion
 
@@ -68,12 +60,13 @@ namespace 微信数据入库
 
                 ConcurrentDictionary<long, List<string>> numbers = new ConcurrentDictionary<long, List<string>>();
                 ConcurrentDictionary<long, List<WxItem>> wxInfos = new ConcurrentDictionary<long, List<WxItem>>();
+                List<Cno> cNo = null;
 
                 using (IDbConnection connection = new MySqlConnection(conTerminal))
                 {
-                    var number = connection.Query<Cno>("SELECT t.Number,t.UserId FROM user_terminal t ").ToList();
-                    //有的UserId没有Number
-                    foreach (var numItem in number)
+                    cNo = connection.Query<Cno>("SELECT t.Number,t.UserId FROM user_terminal t ").ToList();
+                    log.Debug($"从user_terminal表获取到的需要入库的卡共：{cNo.Count}张");
+                    foreach (var numItem in cNo)
                     {
 
                         if (numbers.ContainsKey(numItem.UserId))
@@ -89,13 +82,11 @@ namespace 微信数据入库
 
                         }
                     }
-                     totalData =
-                      connection.Query<Wechat>("select DISTINCT t.UserId from base_app.user_wechat t")
-                          .ToList().Count;
+                 
                     var appId =
                         connection.Query<Wechat>("SELECT  t.OpenId,t.WxPublicNo,t.UserId FROM user_wechat t ")
                             .ToList();
-                    
+
                     foreach (var appItem in appId)
                     {
                         if (wxInfos.ContainsKey(appItem.UserId))
@@ -136,72 +127,60 @@ namespace 微信数据入库
                     }
                 }
 
-               
-                //每次10000
                 long suctotalData = 0;
-                long realtotalData = 0;
-                //long testCount = 0;
-                long failCount = 0;
+                long noData = 0;//在user_wechat表里无数据
                 var pageSize = 10000;
-                var total = userIds.Count;
+                var total = cNo.Count;
                 var pages = total / pageSize + (total % pageSize > 0 ? 1 : 0);
 
                 for (int i = 0; i < pages; i++)
                 {
-                    var subDatas = userIds.Skip(i * pageSize).Take(pageSize);
+                    var subDatas = cNo.Skip(i * pageSize).Take(pageSize);
                     List<WxInfo> wxInfoList = new List<WxInfo>();
 
                     foreach (var user in subDatas)
                     {
-                        //if (wxInfos.ContainsKey(user.Id))
-                        //{
-                        //    testCount++;
-                        //}
-                        if (numbers.ContainsKey(user.Id) && wxInfos.ContainsKey(user.Id))
-                        {
-                            var number = numbers[user.Id];//从mong中找sim
-                          
-                            foreach (var numItem in number)
-                            {
-                                realtotalData++;
-                                BsonArray querys = new BsonArray();
-                                querys.Add(new BsonDocument("iccid", numItem));
-                                querys.Add(new BsonDocument("imsi", numItem));
-                                BsonDocument query = new BsonDocument("$or", querys);
-                                var card = cardCollection.Find(query).FirstOrDefault();
-                                if (card != null)
-                                {
-                                    WxInfo wxInfo = new WxInfo();
-                                    wxInfo.cNo = card.cNo;
-                                    wxInfo.wxInfo = wxInfos[user.Id];
-                                    wxInfoList.Add(wxInfo);
-                                }
-                                else
-                                {
-                                    log.Debug($"{numItem}在库里没有对应的卡号,目前没有卡号的共{++noCno}个");
-                                }
 
+                        if (wxInfos.ContainsKey(user.UserId))
+                        {
+                            //从mong中找sim
+                            BsonArray querys = new BsonArray();
+                            querys.Add(new BsonDocument("iccid", user.Number));
+                            querys.Add(new BsonDocument("imsi", user.Number));
+                            BsonDocument query = new BsonDocument("$or", querys);
+                            var card = cardCollection.Find(query).FirstOrDefault();
+                            if (card != null)
+                            {
+                                WxInfo wxInfo = new WxInfo();
+                                wxInfo.cNo = card.cNo;
+                                wxInfo.wxInfo = wxInfos[user.UserId];
+                                wxInfoList.Add(wxInfo);
+                            }
+                            else
+                            {
+                                log.Debug($"{user.Number}在库里没有对应的卡号,目前没有卡号的共{++noCno}个");
                             }
                         }
 
+                        else
+                        {
+                            log.Debug($"{user.UserId}在user_wechat表里无数据,目前这种卡共{++noData}张");
+                        }
                     }
 
                     //mongdb处理
                     var list = wxInfoList.Select(item => new InsertOneModel<WxInfo>(item)).Cast<WriteModel<WxInfo>>().ToList();
 
                     var bulkResult = wechatCollection.BulkWriteAsync(list).Result;
-
                     //log.Debug($"微信数据入库第{i + 1}页：pasize：{subDatas.ToList().Count}，成功数：{bulkResult.InsertedCount}，失败数：{subDatas.ToList().Count - bulkResult.InsertedCount}");
-                    suctotalData+= bulkResult.InsertedCount;
+                    suctotalData += bulkResult.InsertedCount;
                     //failCount += subDatas.ToList().Count - bulkResult.InsertedCount;
                 }
 
 
-
                 var endTime = DateTime.Now;
                 log.Debug($"微信数据入库结束时间：{endTime}");
-               
-                    log.Debug($"微信数据入库：总数据量:{realtotalData}，总成功数：{suctotalData}，由于mongo数据库卡号不存在失败的卡：{noCno}");
+                log.Debug($"微信数据入库：总数据量:{cNo.Count}张，总成功数：{suctotalData}，由于mongo数据库卡号不存在失败的卡：{noCno},在user_wechat表里无数据的卡共：{noData}张");
             }
             catch (Exception ex)
             {
