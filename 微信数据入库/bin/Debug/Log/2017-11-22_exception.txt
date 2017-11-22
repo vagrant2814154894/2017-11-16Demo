@@ -1,0 +1,10 @@
+2017-11-22 11:26:16.6549 | Error | source=|user=|action=|微信数据入库异常信息：程序集“微信数据入库, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null”中的类型“微信数据入库.Etity.Cno”未标记为可序列化。 
+2017-11-22 15:21:28.2100 | Error | source=|user=|action=|微信数据入库异常信息：程序集“微信数据入库, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null”中的类型“微信数据入库.Etity.Wechat”未标记为可序列化。 
+2017-11-22 15:23:44.8148 | Error | source=|user=|action=|微信数据入库异常信息：程序集“微信数据入库, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null”中的类型“微信数据入库.Etity.Wechat”未标记为可序列化。 
+2017-11-22 15:39:39.5426 | Error | source=|user=|action=|微信数据入库异常信息：WRONGTYPE Operation against a key holding the wrong kind of value, sPort: 55673, LastCommand:  
+2017-11-22 19:10:20.3210 | Error | PutLogs err:request is failed. ErrorCode : SLSRequestError, Message: request is failed., RequestId:  
+ RuntimeMethodHandle.InvokeMethod => ProcessQueue`1.Process => Logger.logHandler 
+
+2017-11-22 19:54:42.7733 | Error | PutLogs err:request is failed. ErrorCode : SLSRequestError, Message: request is failed., RequestId:  
+ RuntimeMethodHandle.InvokeMethod => ProcessQueue`1.Process => Logger.logHandler 
+

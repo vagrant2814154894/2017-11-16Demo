@@ -11,6 +11,7 @@ namespace 微信数据入库.Etity
         public string OpenId { get; set; }
         public string WxPublicNo { get; set; }
         public long UserId { get; set; }
+        public DateTime UpdateTime { get; set; }
 
     }
 }

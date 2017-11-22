@@ -25,3 +25,15 @@ C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\De
 C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\Google.ProtocolBuffers.dll
 C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\zlibnet.dll
 C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\AliLog.pdb
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\Commons.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\log4net.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\Memcached.ClientLibrary.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\ServiceStack.Common.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\ServiceStack.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\ServiceStack.Interfaces.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\ServiceStack.OrmLite.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\ServiceStack.OrmLite.SqlServer.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\ServiceStack.Redis.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\ServiceStack.ServiceInterface.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\微信数据入库\bin\Debug\ServiceStack.Text.dll

@@ -1,0 +1,14 @@
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\bin\Debug\RedisDemo.exe.config
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\bin\Debug\RedisDemo.exe
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\bin\Debug\RedisDemo.pdb
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\bin\Debug\ServiceStack.Common.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\bin\Debug\ServiceStack.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\bin\Debug\ServiceStack.Interfaces.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\bin\Debug\ServiceStack.OrmLite.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\bin\Debug\ServiceStack.OrmLite.SqlServer.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\bin\Debug\ServiceStack.Redis.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\bin\Debug\ServiceStack.ServiceInterface.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\bin\Debug\ServiceStack.Text.dll
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\obj\Debug\RedisDemo.csprojResolveAssemblyReference.cache
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\obj\Debug\RedisDemo.exe
+C:\Users\zyy\Desktop\2017-11-16Demo\微信数据入库\RedisDemo\obj\Debug\RedisDemo.pdb

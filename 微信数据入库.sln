@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowDataModel", "E:\SourceC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AliLog", "E:\SourceCode\车控宝服务平台\公共组件\AliLog\AliLog\AliLog.csproj", "{B52F5B39-CBCE-464E-B953-5DD1C0377343}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisDemo", "RedisDemo\RedisDemo.csproj", "{590B9DD7-B84C-4BD7-886D-174A0A2B3209}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Release|x64.Build.0 = Release|Any CPU
 		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Release|x86.ActiveCfg = Release|x86
 		{B52F5B39-CBCE-464E-B953-5DD1C0377343}.Release|x86.Build.0 = Release|x86
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Debug|x64.Build.0 = Debug|Any CPU
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Debug|x86.Build.0 = Debug|Any CPU
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Release|Any CPU.Build.0 = Release|Any CPU
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Release|x64.ActiveCfg = Release|Any CPU
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Release|x64.Build.0 = Release|Any CPU
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Release|x86.ActiveCfg = Release|Any CPU
+		{590B9DD7-B84C-4BD7-886D-174A0A2B3209}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
