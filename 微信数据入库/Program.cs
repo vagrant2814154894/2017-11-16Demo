@@ -35,7 +35,7 @@ namespace 微信数据入库
         //当前操作数据库
         static IMongoDatabase database;
         /// <summary>
-        /// 
+        /// redis客户端
         /// </summary>
         static RedisClient redisClient;
         //string conTerminal = "Server=fxftdatabase.mysql.rds.aliyuncs.com;Port=3306;initial catalog=base_app;uid=ckb_admin; pwd =ckbadmin;Allow User Variables=True;Convert Zero Datetime=True";
